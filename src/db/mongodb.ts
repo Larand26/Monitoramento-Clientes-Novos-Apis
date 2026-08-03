@@ -3,8 +3,6 @@ import appConfig from "../config/app.config.js";
 
 const mongoURI = appConfig.mongodb.uri;
 
-mongoose.connect(mongoURI);
-
 export async function connectToMongoDB(): Promise<void> {
   try {
     await mongoose.connect(mongoURI);
@@ -25,13 +23,25 @@ export async function disconnectFromMongoDB(): Promise<void> {
   }
 }
 
-export async function insertData(model: mongoose.Model<any>, data: any) {
+export async function insertData(
+  model: mongoose.Model<any>,
+  data: any,
+  collectionName: string,
+): Promise<void> {
   try {
+    const modelCollection = model.collection.name;
+
+    if (collectionName && collectionName !== modelCollection) {
+      throw new Error(
+        `Collection mismatch: received '${collectionName}', but model writes to '${modelCollection}'`,
+      );
+    }
+
     const newData = new model(data);
     await newData.save();
-    console.log("Data added to MongoDB");
+    console.log(`Data added to MongoDB collection: ${modelCollection}`);
   } catch (error) {
     console.error("Error adding data to MongoDB:", error);
-    process.exit(1);
+    throw error;
   }
 }
