@@ -7,4 +7,7 @@ export default {
     mode: process.env.MODE || "production",
     tokenSecret: process.env.TOKEN_SECRET || "default_secret",
   },
+  mongodb: {
+    uri: process.env.MONGODB_URI || "mongodb://localhost:27017/mydatabase",
+  },
 };
