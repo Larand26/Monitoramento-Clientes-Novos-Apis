@@ -2,6 +2,7 @@ import type { Request, Response } from "express";
 import { getClients as getClientsService } from "../services/clientsService.js";
 import { getClientsById as getClientByIdService } from "../services/clientsService.js";
 import { createClient as createClientService } from "../services/clientsService.js";
+import { updateClient as updateClientService } from "../services/clientsService.js";
 
 export async function getClients(req: Request, res: Response): Promise<void> {
   try {
@@ -112,6 +113,30 @@ export async function createClient(req: Request, res: Response): Promise<void> {
     res.status(201).json(response);
   } catch (error) {
     console.error("Erro ao criar cliente:", error);
+    res
+      .status(500)
+      .json({ success: false, message: "Erro interno do servidor." });
+  }
+}
+
+export async function updateClient(req: Request, res: Response): Promise<void> {
+  try {
+    const { id, client } = req.body;
+    if (!id || !client) {
+      res.status(400).json({
+        success: false,
+        message: "Parâmetros 'id' e 'client' são obrigatórios.",
+      });
+      return;
+    }
+    const response = await updateClientService(id, client);
+    if (!response.success) {
+      res.status(400).json(response);
+      return;
+    }
+    res.status(200).json(response);
+  } catch (error) {
+    console.error("Erro ao atualizar cliente:", error);
     res
       .status(500)
       .json({ success: false, message: "Erro interno do servidor." });

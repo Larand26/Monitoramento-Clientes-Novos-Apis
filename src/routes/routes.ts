@@ -4,6 +4,7 @@ import {
   getClients,
   getClientsById,
   createClient,
+  updateClient,
 } from "../controllers/clientsController.js";
 
 const routes = Router();
@@ -15,6 +16,8 @@ routes.get("/", (req: Request, res: Response, next: NextFunction) => {
 routes.get("/get-clients", getClients);
 
 routes.get("/get-client-byid", getClientsById);
+
+routes.put("/update-client", updateClient);
 
 routes.post("/create-client", createClient);
 
