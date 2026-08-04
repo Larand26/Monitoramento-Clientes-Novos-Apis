@@ -4,6 +4,7 @@ import { getClientsById as getClientByIdService } from "../services/clientsServi
 import { createClient as createClientService } from "../services/clientsService.js";
 import { updateClient as updateClientService } from "../services/clientsService.js";
 import { deleteClient as deleteClientService } from "../services/clientsService.js";
+import { addProjectedProfit as addProjectedProfitService } from "../services/clientsService.js";
 
 export async function getClients(req: Request, res: Response): Promise<void> {
   try {
@@ -162,6 +163,67 @@ export async function deleteClient(req: Request, res: Response): Promise<void> {
     res.status(200).json(response);
   } catch (error) {
     console.error("Erro ao excluir cliente:", error);
+    res
+      .status(500)
+      .json({ success: false, message: "Erro interno do servidor." });
+  }
+}
+
+export async function addProjectedProfit(
+  req: Request,
+  res: Response,
+): Promise<void> {
+  try {
+    const { id, id_type, store_order_id, magento_order_id, projected_profit } =
+      req.body;
+    if (!id || !id_type || !store_order_id || projected_profit === undefined) {
+      res.status(400).json({
+        success: false,
+        message:
+          "Parâmetros 'id', 'id_type', 'store_order_id' e 'projected_profit' são obrigatórios.",
+      });
+      return;
+    }
+
+    if (
+      Array.isArray(id) ||
+      Array.isArray(id_type) ||
+      Array.isArray(store_order_id) ||
+      Array.isArray(magento_order_id)
+    ) {
+      res.status(400).json({
+        success: false,
+        message: "Os parâmetros informados devem ser valores escalares.",
+      });
+      return;
+    }
+
+    const parsedProjectedProfit = Number(projected_profit);
+
+    if (Number.isNaN(parsedProjectedProfit)) {
+      res.status(400).json({
+        success: false,
+        message: "'projected_profit' deve ser um número válido.",
+      });
+      return;
+    }
+
+    const response = await addProjectedProfitService(
+      String(id),
+      String(id_type),
+      String(store_order_id),
+      parsedProjectedProfit,
+      magento_order_id ? String(magento_order_id) : undefined,
+    );
+
+    if (!response.success) {
+      res.status(404).json(response);
+      return;
+    }
+
+    res.status(200).json(response);
+  } catch (error) {
+    console.error("Erro ao adicionar projected_profit:", error);
     res
       .status(500)
       .json({ success: false, message: "Erro interno do servidor." });

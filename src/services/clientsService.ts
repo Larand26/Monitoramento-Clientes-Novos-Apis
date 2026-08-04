@@ -157,3 +157,59 @@ export async function deleteClient(id: string): Promise<IResponse | IError> {
     await disconnectFromMongoDB();
   }
 }
+
+export async function addProjectedProfit(
+  id: string,
+  idType: string,
+  storeOrderId: string,
+  projectedProfit: number,
+  magentoOrderId?: string,
+): Promise<IResponse | IError> {
+  try {
+    // Abre a conexão com o MongoDB
+    await connectToMongoDB();
+
+    const updatePayload: Record<string, any> = {
+      $addToSet: {
+        store_order_ids: storeOrderId,
+      },
+      $inc: {
+        projected_profit: projectedProfit,
+      },
+    };
+
+    if (magentoOrderId) {
+      updatePayload.$addToSet.magento_order_ids = magentoOrderId;
+    }
+
+    const updatedClient = await ClientModel.findOneAndUpdate(
+      { [idType]: id },
+      updatePayload,
+      { new: true },
+    );
+
+    if (!updatedClient) {
+      return {
+        success: false,
+        message: "Cliente não encontrado.",
+        archive: "src/services/clientsService.ts",
+        error: "ERR_CLIENT_NOT_FOUND",
+      };
+    }
+
+    return {
+      success: true,
+      data: updatedClient,
+    };
+  } catch (error: any) {
+    return {
+      success: false,
+      message: error.message,
+      archive: "src/services/clientsService.ts",
+      error: "ERR_ADD_PROJECTED_PROFIT",
+    };
+  } finally {
+    // Fecha a conexão com o MongoDB
+    await disconnectFromMongoDB();
+  }
+}

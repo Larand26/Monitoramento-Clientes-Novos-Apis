@@ -6,6 +6,7 @@ import {
   createClient,
   updateClient,
   deleteClient,
+  addProjectedProfit,
 } from "../controllers/clientsController.js";
 
 const routes = Router();
@@ -21,6 +22,8 @@ routes.get("/get-client-byid", getClientsById);
 routes.put("/update-client", updateClient);
 
 routes.post("/create-client", createClient);
+
+routes.post("/add-projected-profit", addProjectedProfit);
 
 routes.delete("/delete-client", deleteClient);
 
