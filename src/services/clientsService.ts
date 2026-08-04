@@ -38,3 +38,41 @@ export async function getClients(
     await disconnectFromMongoDB();
   }
 }
+
+export async function getClientsById(
+  id: string,
+  id_type: string,
+): Promise<IResponse | IError> {
+  try {
+    // Abre a conexão com o MongoDB
+    await connectToMongoDB();
+    // Busca o cliente com base no ID e tipo de ID fornecidos
+    const client: any = await findData(
+      ClientModel,
+      { [id_type]: id },
+      "clients",
+    );
+    if (!client || client.length === 0) {
+      return {
+        success: false,
+        message: "Cliente não encontrado.",
+        archive: "src/services/clientsService.ts",
+        error: "ERR_CLIENT_NOT_FOUND",
+      };
+    }
+    return {
+      success: true,
+      data: client[0],
+    };
+  } catch (error: any) {
+    return {
+      success: false,
+      message: error.message,
+      archive: "src/services/clientsService.ts",
+      error: "ERR_GET_CLIENT_BY_ID",
+    };
+  } finally {
+    // Fecha a conexão com o MongoDB
+    await disconnectFromMongoDB();
+  }
+}
