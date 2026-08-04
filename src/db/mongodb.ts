@@ -83,3 +83,22 @@ export async function updateData(
     throw error;
   }
 }
+
+export async function deleteData(
+  model: mongoose.Model<any>,
+  query: any,
+  collectionName: string,
+): Promise<void> {
+  try {
+    const modelCollection = model.collection.name;
+    if (collectionName && collectionName !== modelCollection) {
+      throw new Error(
+        `Collection mismatch: received '${collectionName}', but model writes to '${modelCollection}'`,
+      );
+    }
+    await model.deleteOne(query);
+  } catch (error) {
+    console.error("Error deleting data in MongoDB:", error);
+    throw error;
+  }
+}
