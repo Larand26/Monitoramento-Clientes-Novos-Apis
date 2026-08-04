@@ -1,40 +1,48 @@
 import type { Request, Response } from "express";
-
-// Services
 import { getClients as getClientsService } from "../services/clientsService.js";
 
-// Busca os clientes com base nos parâmetros fornecidos na URL
 export async function getClients(req: Request, res: Response): Promise<void> {
-  const {
-    status,
-    cnpj,
-    created_start,
-    created_end,
-    updated_start,
-    updated_end,
-    name,
-    seller_id,
-    page = "1",
-    limit = "100",
-  } = req.query;
+  try {
+    const {
+      status,
+      cnpj,
+      created_start,
+      created_end,
+      updated_start,
+      updated_end,
+      name,
+      seller_id,
+      page = 1,
+      limit = 100,
+    } = req.query;
 
-  const response = await getClientsService({
-    status: String(status ?? ""),
-    cnpj: String(cnpj ?? ""),
-    created_start: String(created_start ?? ""),
-    created_end: String(created_end ?? ""),
-    updated_start: String(updated_start ?? ""),
-    updated_end: String(updated_end ?? ""),
-    name: String(name ?? ""),
-    seller_id: String(seller_id ?? ""),
-    page: Number(page),
-    limit: Number(limit),
-  });
+    const serviceParams: Record<string, any> = {};
 
-  if (!response.success) {
-    res.status(500).json(response);
-    return;
+    if (status) serviceParams.status = String(status);
+    if (cnpj) serviceParams.cnpj = String(cnpj);
+    if (created_start) serviceParams.created_start = String(created_start);
+    if (created_end) serviceParams.created_end = String(created_end);
+    if (updated_start) serviceParams.updated_start = String(updated_start);
+    if (updated_end) serviceParams.updated_end = String(updated_end);
+    if (name) serviceParams.name = String(name);
+    if (seller_id) serviceParams.seller_id = String(seller_id);
+
+    const response = await getClientsService(
+      serviceParams,
+      Number(page),
+      Number(limit),
+    );
+
+    if (!response.success) {
+      res.status(400).json(response);
+      return;
+    }
+
+    res.status(200).json(response);
+  } catch (error) {
+    console.error("Erro ao buscar clientes:", error);
+    res
+      .status(500)
+      .json({ success: false, message: "Erro interno do servidor." });
   }
-
-  res.status(200).json(response);
 }

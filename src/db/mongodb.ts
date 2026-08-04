@@ -53,6 +53,7 @@ export async function findData(
 ): Promise<any[]> {
   try {
     const modelCollection = model.collection.name;
+    console.log(query);
 
     if (collectionName && collectionName !== modelCollection) {
       throw new Error(
