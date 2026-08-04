@@ -2,7 +2,7 @@ import type IResponse from "../interfaces/response.js";
 import type IError from "../interfaces/error.js";
 
 import ClientModel from "../models/client.model.js";
-import { findData, insertData, updateData } from "../db/mongodb.js";
+import { findData, insertData, updateData, deleteData } from "../db/mongodb.js";
 import { connectToMongoDB, disconnectFromMongoDB } from "../db/mongodb.js";
 
 export async function getClients(
@@ -127,6 +127,30 @@ export async function updateClient(
       message: error.message,
       archive: "src/services/clientsService.ts",
       error: "ERR_UPDATE_CLIENT",
+    };
+  } finally {
+    // Fecha a conexão com o MongoDB
+    await disconnectFromMongoDB();
+  }
+}
+
+export async function deleteClient(id: string): Promise<IResponse | IError> {
+  try {
+    // Abre a conexão com o MongoDB
+    await connectToMongoDB();
+    // Exclui o cliente do banco de dados
+    await deleteData(ClientModel, { _id: id }, "clients");
+
+    return {
+      success: true,
+      data: { id },
+    };
+  } catch (error: any) {
+    return {
+      success: false,
+      message: error.message,
+      archive: "src/services/clientsService.ts",
+      error: "ERR_DELETE_CLIENT",
     };
   } finally {
     // Fecha a conexão com o MongoDB

@@ -5,6 +5,7 @@ import {
   getClientsById,
   createClient,
   updateClient,
+  deleteClient,
 } from "../controllers/clientsController.js";
 
 const routes = Router();
@@ -20,5 +21,7 @@ routes.get("/get-client-byid", getClientsById);
 routes.put("/update-client", updateClient);
 
 routes.post("/create-client", createClient);
+
+routes.delete("/delete-client", deleteClient);
 
 export default routes;

@@ -3,6 +3,7 @@ import { getClients as getClientsService } from "../services/clientsService.js";
 import { getClientsById as getClientByIdService } from "../services/clientsService.js";
 import { createClient as createClientService } from "../services/clientsService.js";
 import { updateClient as updateClientService } from "../services/clientsService.js";
+import { deleteClient as deleteClientService } from "../services/clientsService.js";
 
 export async function getClients(req: Request, res: Response): Promise<void> {
   try {
@@ -137,6 +138,30 @@ export async function updateClient(req: Request, res: Response): Promise<void> {
     res.status(200).json(response);
   } catch (error) {
     console.error("Erro ao atualizar cliente:", error);
+    res
+      .status(500)
+      .json({ success: false, message: "Erro interno do servidor." });
+  }
+}
+
+export async function deleteClient(req: Request, res: Response): Promise<void> {
+  try {
+    const { id } = req.body;
+    if (!id) {
+      res.status(400).json({
+        success: false,
+        message: "Parâmetro 'id' é obrigatório.",
+      });
+      return;
+    }
+    const response = await deleteClientService(id);
+    if (!response.success) {
+      res.status(400).json(response);
+      return;
+    }
+    res.status(200).json(response);
+  } catch (error) {
+    console.error("Erro ao excluir cliente:", error);
     res
       .status(500)
       .json({ success: false, message: "Erro interno do servidor." });
