@@ -1,6 +1,7 @@
 import type { Request, Response } from "express";
 import { getClients as getClientsService } from "../services/clientsService.js";
 import { getClientsById as getClientByIdService } from "../services/clientsService.js";
+import { createClient as createClientService } from "../services/clientsService.js";
 
 export async function getClients(req: Request, res: Response): Promise<void> {
   try {
@@ -71,6 +72,46 @@ export async function getClientsById(
     res.status(200).json(response);
   } catch (error) {
     console.error("Erro ao buscar cliente por ID:", error);
+    res
+      .status(500)
+      .json({ success: false, message: "Erro interno do servidor." });
+  }
+}
+
+export async function createClient(req: Request, res: Response): Promise<void> {
+  try {
+    interface IClient {
+      magento_id: string;
+      rd_station_id: string;
+      store_id?: string;
+      name: string;
+      cnpj: string;
+      seller_id?: number;
+      magento_order_ids?: string[];
+      store_order_ids?: string[];
+      status: "IN_CRM" | "LOST" | "SUCCESS";
+      projected_profit?: number;
+      created_at?: Date;
+      updated_at?: Date;
+    }
+    const clientData: IClient = req.body;
+    if (!clientData.status) clientData.status = "IN_CRM";
+    if (!clientData.seller_id) clientData.seller_id = 0;
+    if (!clientData.store_id) clientData.store_id = "";
+    if (!clientData.updated_at) clientData.updated_at = new Date();
+    if (!clientData.created_at) clientData.created_at = new Date();
+    if (!clientData.magento_order_ids) clientData.magento_order_ids = [];
+    if (!clientData.store_order_ids) clientData.store_order_ids = [];
+    if (!clientData.projected_profit) clientData.projected_profit = 0;
+
+    const response = await createClientService(clientData);
+    if (!response.success) {
+      res.status(400).json(response);
+      return;
+    }
+    res.status(201).json(response);
+  } catch (error) {
+    console.error("Erro ao criar cliente:", error);
     res
       .status(500)
       .json({ success: false, message: "Erro interno do servidor." });

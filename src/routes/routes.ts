@@ -3,6 +3,7 @@ import type { Request, Response, NextFunction } from "express";
 import {
   getClients,
   getClientsById,
+  createClient,
 } from "../controllers/clientsController.js";
 
 const routes = Router();
@@ -14,5 +15,7 @@ routes.get("/", (req: Request, res: Response, next: NextFunction) => {
 routes.get("/get-clients", getClients);
 
 routes.get("/get-client-byid", getClientsById);
+
+routes.post("/create-client", createClient);
 
 export default routes;

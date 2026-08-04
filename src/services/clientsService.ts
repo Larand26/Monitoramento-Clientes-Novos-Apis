@@ -2,7 +2,7 @@ import type IResponse from "../interfaces/response.js";
 import type IError from "../interfaces/error.js";
 
 import ClientModel from "../models/client.model.js";
-import { findData } from "../db/mongodb.js";
+import { findData, insertData } from "../db/mongodb.js";
 import { connectToMongoDB, disconnectFromMongoDB } from "../db/mongodb.js";
 
 export async function getClients(
@@ -70,6 +70,32 @@ export async function getClientsById(
       message: error.message,
       archive: "src/services/clientsService.ts",
       error: "ERR_GET_CLIENT_BY_ID",
+    };
+  } finally {
+    // Fecha a conexão com o MongoDB
+    await disconnectFromMongoDB();
+  }
+}
+
+export async function createClient(
+  clientData: any,
+): Promise<IResponse | IError> {
+  try {
+    // Abre a conexão com o MongoDB
+    await connectToMongoDB();
+    // Cria um novo cliente no banco de dados
+    await insertData(ClientModel, clientData, "clients");
+
+    return {
+      success: true,
+      data: clientData,
+    };
+  } catch (error: any) {
+    return {
+      success: false,
+      message: error.message,
+      archive: "src/services/clientsService.ts",
+      error: "ERR_CREATE_CLIENT",
     };
   } finally {
     // Fecha a conexão com o MongoDB
