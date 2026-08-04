@@ -45,3 +45,26 @@ export async function insertData(
     throw error;
   }
 }
+
+export async function findData(
+  model: mongoose.Model<any>,
+  query: any,
+  collectionName: string,
+): Promise<any[]> {
+  try {
+    const modelCollection = model.collection.name;
+
+    if (collectionName && collectionName !== modelCollection) {
+      throw new Error(
+        `Collection mismatch: received '${collectionName}', but model writes to '${modelCollection}'`,
+      );
+    }
+
+    const data = await model.find(query);
+    console.log(`Data found in MongoDB collection: ${modelCollection}`);
+    return data;
+  } catch (error) {
+    console.error("Error finding data in MongoDB:", error);
+    throw error;
+  }
+}
