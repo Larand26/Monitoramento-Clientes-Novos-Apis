@@ -63,3 +63,23 @@ export async function findData(
     throw error;
   }
 }
+
+export async function updateData(
+  model: mongoose.Model<any>,
+  query: any,
+  update: any,
+  collectionName: string,
+): Promise<void> {
+  try {
+    const modelCollection = model.collection.name;
+    if (collectionName && collectionName !== modelCollection) {
+      throw new Error(
+        `Collection mismatch: received '${collectionName}', but model writes to '${modelCollection}'`,
+      );
+    }
+    await model.updateOne(query, update);
+  } catch (error) {
+    console.error("Error updating data in MongoDB:", error);
+    throw error;
+  }
+}
