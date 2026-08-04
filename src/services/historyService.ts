@@ -32,3 +32,27 @@ export async function getHistory(filters: any): Promise<IResponse | IError> {
     await disconnectFromMongoDB();
   }
 }
+
+export async function insertHistory(data: any): Promise<IResponse | IError> {
+  try {
+    // Abre a conexão com o MongoDB
+    await connectToMongoDB();
+
+    // Insere o histórico no banco de dados
+    const result = await insertData(StatusHistoryModel, data, "status_history");
+    return {
+      success: true,
+      data: result,
+    };
+  } catch (error: any) {
+    return {
+      success: false,
+      message: error.message,
+      archive: "src/services/historyService.ts",
+      error: "ERR_INSERT_HISTORY",
+    };
+  } finally {
+    // Fecha a conexão com o MongoDB
+    await disconnectFromMongoDB();
+  }
+}

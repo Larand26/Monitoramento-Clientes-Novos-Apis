@@ -9,7 +9,7 @@ import {
   addProjectedProfit,
 } from "../controllers/clientsController.js";
 
-import { getHistory } from "../controllers/historyController.js";
+import { getHistory, insertHistory } from "../controllers/historyController.js";
 
 const routes = Router();
 
@@ -30,5 +30,7 @@ routes.post("/add-projected-profit", addProjectedProfit);
 routes.delete("/delete-client", deleteClient);
 
 routes.get("/get-client-history", getHistory);
+
+routes.post("/insert-status-history", insertHistory);
 
 export default routes;
