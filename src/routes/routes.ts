@@ -9,6 +9,14 @@ import {
   addProjectedProfit,
 } from "../controllers/clientsController.js";
 
+import {
+  getSellers,
+  getSellerById,
+  createSeller,
+  updateSeller,
+  deleteSeller,
+} from "../controllers/sellerController.js";
+
 import { getHistory, insertHistory } from "../controllers/historyController.js";
 
 const routes = Router();
@@ -28,6 +36,16 @@ routes.post("/create-client", createClient);
 routes.post("/add-projected-profit", addProjectedProfit);
 
 routes.delete("/delete-client", deleteClient);
+
+routes.get("/get-sellers", getSellers);
+
+routes.get("/get-seller-byid", getSellerById);
+
+routes.put("/update-seller", updateSeller);
+
+routes.post("/create-seller", createSeller);
+
+routes.delete("/delete-seller", deleteSeller);
 
 routes.get("/get-client-history", getHistory);
 
