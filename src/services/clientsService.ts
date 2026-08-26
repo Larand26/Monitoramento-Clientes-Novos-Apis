@@ -11,10 +11,6 @@ export async function getClients(
   limit: number,
 ): Promise<IResponse | IError> {
   try {
-    // Abre a conexão com o MongoDB
-    await connectToMongoDB();
-
-    // Busca os clientes com base nos filtros fornecidos
     const clients: any[] = await findData(ClientModel, filters, "clients");
     const totalClients = clients.length;
     return {
@@ -33,20 +29,13 @@ export async function getClients(
       archive: "src/services/clientsService.ts",
       error: "ERR_GET_CLIENTS",
     };
-  } finally {
-    // Fecha a conexão com o MongoDB
-    await disconnectFromMongoDB();
   }
 }
-
 export async function getClientsById(
   id: string,
   id_type: string,
 ): Promise<IResponse | IError> {
   try {
-    // Abre a conexão com o MongoDB
-    await connectToMongoDB();
-    // Busca o cliente com base no ID e tipo de ID fornecidos
     const client: any = await findData(
       ClientModel,
       { [id_type]: id },
@@ -71,9 +60,6 @@ export async function getClientsById(
       archive: "src/services/clientsService.ts",
       error: "ERR_GET_CLIENT_BY_ID",
     };
-  } finally {
-    // Fecha a conexão com o MongoDB
-    await disconnectFromMongoDB();
   }
 }
 
@@ -81,9 +67,6 @@ export async function createClient(
   clientData: any,
 ): Promise<IResponse | IError> {
   try {
-    // Abre a conexão com o MongoDB
-    await connectToMongoDB();
-    // Cria um novo cliente no banco de dados
     await insertData(ClientModel, clientData, "clients");
 
     return {
@@ -97,9 +80,6 @@ export async function createClient(
       archive: "src/services/clientsService.ts",
       error: "ERR_CREATE_CLIENT",
     };
-  } finally {
-    // Fecha a conexão com o MongoDB
-    await disconnectFromMongoDB();
   }
 }
 
@@ -108,9 +88,6 @@ export async function updateClient(
   clientData: any,
 ): Promise<IResponse | IError> {
   try {
-    // Abre a conexão com o MongoDB
-    await connectToMongoDB();
-    // Atualiza o cliente no banco de dados
     const updatedClient = await updateData(
       ClientModel,
       { _id: id },
@@ -128,17 +105,11 @@ export async function updateClient(
       archive: "src/services/clientsService.ts",
       error: "ERR_UPDATE_CLIENT",
     };
-  } finally {
-    // Fecha a conexão com o MongoDB
-    await disconnectFromMongoDB();
   }
 }
 
 export async function deleteClient(id: string): Promise<IResponse | IError> {
   try {
-    // Abre a conexão com o MongoDB
-    await connectToMongoDB();
-    // Exclui o cliente do banco de dados
     await deleteData(ClientModel, { _id: id }, "clients");
 
     return {
@@ -152,9 +123,6 @@ export async function deleteClient(id: string): Promise<IResponse | IError> {
       archive: "src/services/clientsService.ts",
       error: "ERR_DELETE_CLIENT",
     };
-  } finally {
-    // Fecha a conexão com o MongoDB
-    await disconnectFromMongoDB();
   }
 }
 
@@ -166,9 +134,6 @@ export async function addProjectedProfit(
   magentoOrderId?: string,
 ): Promise<IResponse | IError> {
   try {
-    // Abre a conexão com o MongoDB
-    await connectToMongoDB();
-
     const updatePayload: Record<string, any> = {
       $addToSet: {
         store_order_ids: storeOrderId,
@@ -208,8 +173,5 @@ export async function addProjectedProfit(
       archive: "src/services/clientsService.ts",
       error: "ERR_ADD_PROJECTED_PROFIT",
     };
-  } finally {
-    // Fecha a conexão com o MongoDB
-    await disconnectFromMongoDB();
   }
 }

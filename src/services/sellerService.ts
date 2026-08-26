@@ -11,8 +11,6 @@ export async function getSellers(
   limit: number,
 ): Promise<IResponse | IError> {
   try {
-    await connectToMongoDB();
-
     const sellers: any[] = await findData(sellerModel, filters, "sellers");
     const totalSellers = sellers.length;
 
@@ -32,15 +30,11 @@ export async function getSellers(
       archive: "src/services/sellerService.ts",
       error: "ERR_GET_SELLERS",
     };
-  } finally {
-    await disconnectFromMongoDB();
   }
 }
 
 export async function getSellerById(id: string): Promise<IResponse | IError> {
   try {
-    await connectToMongoDB();
-
     const seller: any = await findData(sellerModel, { _id: id }, "sellers");
 
     if (!seller || seller.length === 0) {
@@ -63,8 +57,6 @@ export async function getSellerById(id: string): Promise<IResponse | IError> {
       archive: "src/services/sellerService.ts",
       error: "ERR_GET_SELLER_BY_ID",
     };
-  } finally {
-    await disconnectFromMongoDB();
   }
 }
 
@@ -72,8 +64,6 @@ export async function createSeller(
   sellerData: any,
 ): Promise<IResponse | IError> {
   try {
-    await connectToMongoDB();
-
     const payload = {
       ...sellerData,
       created_at: sellerData.created_at ?? new Date(),
@@ -92,8 +82,6 @@ export async function createSeller(
       archive: "src/services/sellerService.ts",
       error: "ERR_CREATE_SELLER",
     };
-  } finally {
-    await disconnectFromMongoDB();
   }
 }
 
@@ -102,8 +90,6 @@ export async function updateSeller(
   sellerData: any,
 ): Promise<IResponse | IError> {
   try {
-    await connectToMongoDB();
-
     const updatedSeller = await updateData(
       sellerModel,
       { _id: id },
@@ -122,15 +108,11 @@ export async function updateSeller(
       archive: "src/services/sellerService.ts",
       error: "ERR_UPDATE_SELLER",
     };
-  } finally {
-    await disconnectFromMongoDB();
   }
 }
 
 export async function deleteSeller(id: string): Promise<IResponse | IError> {
   try {
-    await connectToMongoDB();
-
     await deleteData(sellerModel, { _id: id }, "sellers");
 
     return {
@@ -144,7 +126,5 @@ export async function deleteSeller(id: string): Promise<IResponse | IError> {
       archive: "src/services/sellerService.ts",
       error: "ERR_DELETE_SELLER",
     };
-  } finally {
-    await disconnectFromMongoDB();
   }
 }
