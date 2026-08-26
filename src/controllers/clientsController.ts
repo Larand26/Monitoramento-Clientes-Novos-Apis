@@ -25,12 +25,25 @@ export async function getClients(req: Request, res: Response): Promise<void> {
 
     if (status) serviceParams.status = String(status);
     if (cnpj) serviceParams.cnpj = String(cnpj);
-    if (created_start) serviceParams.created_start = String(created_start);
-    if (created_end) serviceParams.created_end = String(created_end);
-    if (updated_start) serviceParams.updated_start = String(updated_start);
-    if (updated_end) serviceParams.updated_end = String(updated_end);
     if (name) serviceParams.name = String(name);
-    if (seller_id) serviceParams.seller_id = String(seller_id);
+    if (seller_id) serviceParams.seller_id = Number(seller_id);
+
+    if (created_start || created_end) {
+      serviceParams.created_at = {};
+      if (created_start)
+        serviceParams.created_at.$gte = new Date(String(created_start));
+      if (created_end)
+        serviceParams.created_at.$lte = new Date(String(created_end));
+    }
+
+    // Filtro para datas de atualização (O que o seu React está chamando)
+    if (updated_start || updated_end) {
+      serviceParams.updated_at = {};
+      if (updated_start)
+        serviceParams.updated_at.$gte = new Date(String(updated_start));
+      if (updated_end)
+        serviceParams.updated_at.$lte = new Date(String(updated_end));
+    }
 
     const response = await getClientsService(
       serviceParams,
