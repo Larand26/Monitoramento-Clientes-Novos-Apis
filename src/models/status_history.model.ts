@@ -16,6 +16,7 @@ const statusHistorySchema = new mongoose.Schema({
     required: true,
     enum: ["IN_CRM", "LOST", "SUCCESS"],
   },
+  order_value: { type: Number, required: true },
   changed_at: { type: Date, required: true },
   order_id: { type: String, required: true },
 });
