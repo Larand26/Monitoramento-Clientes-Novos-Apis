@@ -5,11 +5,38 @@ import StatusHistoryModel from "../models/status_history.model.js";
 import { findData, insertData } from "../db/mongodb.js";
 import { connectToMongoDB, disconnectFromMongoDB } from "../db/mongodb.js";
 
-export async function getHistory(filters: any): Promise<IResponse | IError> {
+import { getClientsById } from "./clientsService.js";
+
+export async function getHistory(filters: {
+  id: string;
+  id_type: string;
+}): Promise<IResponse | IError> {
   try {
+    // Pega _id do cliente
+    const clientResponse = (await getClientsById(
+      filters.id,
+      filters.id_type,
+    )) as IResponse | IError;
+
+    if (
+      !clientResponse.success ||
+      !("data" in clientResponse) ||
+      !clientResponse.data
+    ) {
+      return {
+        success: false,
+        message: "Cliente não encontrado.",
+        archive: "src/services/historyService.ts",
+        error: "ERR_CLIENT_NOT_FOUND",
+      };
+    }
+
+    const client = clientResponse.data;
+    const clientId = client._id;
+
     const history: any[] = await findData(
       StatusHistoryModel,
-      filters,
+      { client_id: clientId },
       "status_history",
     );
     return {

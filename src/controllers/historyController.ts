@@ -14,8 +14,7 @@ export async function getHistory(req: Request, res: Response): Promise<void> {
       return;
     }
 
-    const filters: any = {};
-    filters[id_type as string] = id;
+    const filters: any = { id: String(id), id_type: String(id_type) };
 
     const response = await getHistoryService(filters);
     if (!response.success) {
