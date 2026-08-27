@@ -17,6 +17,7 @@ export async function getClients(req: Request, res: Response): Promise<void> {
       updated_end,
       name,
       seller_id,
+      store_id,
       page = 1,
       limit = 100,
     } = req.query;
@@ -29,7 +30,7 @@ export async function getClients(req: Request, res: Response): Promise<void> {
       serviceParams.name = { $regex: String(name), $options: "i" };
     }
     if (seller_id) serviceParams.seller_id = Number(seller_id);
-
+    if (store_id) serviceParams.store_id = String(store_id);
     if (created_start || created_end) {
       serviceParams.created_at = {};
       if (created_start)
