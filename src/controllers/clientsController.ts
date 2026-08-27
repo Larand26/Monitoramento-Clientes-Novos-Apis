@@ -25,7 +25,9 @@ export async function getClients(req: Request, res: Response): Promise<void> {
 
     if (status) serviceParams.status = String(status);
     if (cnpj) serviceParams.cnpj = String(cnpj);
-    if (name) serviceParams.name = String(name);
+    if (name) {
+      serviceParams.name = { $regex: String(name), $options: "i" };
+    }
     if (seller_id) serviceParams.seller_id = Number(seller_id);
 
     if (created_start || created_end) {
