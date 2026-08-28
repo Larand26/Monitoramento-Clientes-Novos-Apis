@@ -40,7 +40,7 @@ export async function insertHistory(
       previous_status,
       new_status,
       order_id = "",
-      projected_profit = 0,
+      order_value = 0,
     } = req.body;
 
     if (!client_id || !previous_status || !new_status) {
@@ -58,7 +58,7 @@ export async function insertHistory(
     data.new_status = new_status;
     data.changed_at = new Date();
     data.order_id = order_id;
-    data.projected_profit = projected_profit;
+    data.order_value = order_value;
 
     const response = await insertHistoryService(data);
     if (!response.success) {
