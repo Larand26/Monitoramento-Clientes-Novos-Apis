@@ -105,7 +105,7 @@ export async function createClient(req: Request, res: Response): Promise<void> {
       store_id?: string;
       name: string;
       cnpj: string;
-      seller_id?: number;
+      seller_id?: string;
       magento_order_ids?: string[];
       store_order_ids?: string[];
       status: "IN_CRM" | "LOST" | "SUCCESS";
@@ -115,7 +115,7 @@ export async function createClient(req: Request, res: Response): Promise<void> {
     }
     const clientData: IClient = req.body;
     if (!clientData.status) clientData.status = "IN_CRM";
-    if (!clientData.seller_id) clientData.seller_id = 0;
+    if (!clientData.seller_id) clientData.seller_id = "";
     if (!clientData.store_id) clientData.store_id = "";
     if (!clientData.updated_at) clientData.updated_at = new Date();
     if (!clientData.created_at) clientData.created_at = new Date();
