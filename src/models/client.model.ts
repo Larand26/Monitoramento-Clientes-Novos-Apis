@@ -11,7 +11,11 @@ const clientSchema = new mongoose.Schema({
     ref: "Seller",
     required: false,
   },
-  status: { type: String, required: true, enum: ["IN_CRM", "LOST", "SUCCESS"] },
+  status: {
+    type: String,
+    required: true,
+    enum: ["IN_CRM", "LOST", "SUCCESS", "FREEZE"],
+  },
   projected_profit: { type: Number, required: false },
   created_at: { type: Date, required: true },
   updated_at: { type: Date, required: true },
