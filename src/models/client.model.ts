@@ -11,12 +11,11 @@ const clientSchema = new mongoose.Schema({
     ref: "Seller",
     required: false,
   },
-  magento_order_ids: { type: Array<String>, required: false },
-  store_order_ids: { type: Array<String>, required: false },
   status: { type: String, required: true, enum: ["IN_CRM", "LOST", "SUCCESS"] },
   projected_profit: { type: Number, required: false },
   created_at: { type: Date, required: true },
   updated_at: { type: Date, required: true },
+  avg_days_between_purchases: { type: Number, required: false },
 });
 
 const ClientModel = mongoose.model("Client", clientSchema, "clients");

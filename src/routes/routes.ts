@@ -17,6 +17,14 @@ import {
   deleteSeller,
 } from "../controllers/sellerController.js";
 
+import {
+  getOrders,
+  getOrderById,
+  createOrder,
+  updateOrder,
+  deleteOrder,
+} from "../controllers/ordersController.js";
+
 import { getHistory, insertHistory } from "../controllers/historyController.js";
 
 const routes = Router();
@@ -50,5 +58,15 @@ routes.delete("/delete-seller", deleteSeller);
 routes.get("/get-client-history", getHistory);
 
 routes.post("/insert-status-history", insertHistory);
+
+routes.get("/get-orders", getOrders);
+
+routes.get("/get-order-byid", getOrderById);
+
+routes.post("/create-order", createOrder);
+
+routes.put("/update-order", updateOrder);
+
+routes.delete("/delete-order", deleteOrder);
 
 export default routes;
