@@ -18,6 +18,7 @@ export async function getClients(req: Request, res: Response): Promise<void> {
       name,
       seller_id,
       min_orders,
+      min_avg_days_between_purchases,
       store_id,
       page = 1,
       limit = 100,
@@ -48,6 +49,12 @@ export async function getClients(req: Request, res: Response): Promise<void> {
         serviceParams.updated_at.$gte = new Date(String(updated_start));
       if (updated_end)
         serviceParams.updated_at.$lte = new Date(String(updated_end));
+    }
+
+    if (min_avg_days_between_purchases) {
+      serviceParams.avg_days_between_purchases = {
+        $gte: Number(min_avg_days_between_purchases),
+      };
     }
 
     const response = await getClientsService(
