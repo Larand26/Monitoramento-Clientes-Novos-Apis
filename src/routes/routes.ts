@@ -7,6 +7,7 @@ import {
   updateClient,
   deleteClient,
   addProjectedProfit,
+  exportClients,
 } from "../controllers/clientsController.js";
 
 import {
@@ -68,5 +69,7 @@ routes.post("/create-order", createOrder);
 routes.put("/update-order", updateOrder);
 
 routes.delete("/delete-order", deleteOrder);
+
+routes.post("/export-clients", exportClients);
 
 export default routes;
