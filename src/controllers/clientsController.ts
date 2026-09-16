@@ -6,6 +6,7 @@ import { updateClient as updateClientService } from "../services/clientsService.
 import { deleteClient as deleteClientService } from "../services/clientsService.js";
 import { addProjectedProfit as addProjectedProfitService } from "../services/clientsService.js";
 import { generateClientsExcel } from "../services/excelService.js";
+import { generateClientsPDF } from "../services/pdfService.js";
 
 export async function getClients(req: Request, res: Response): Promise<void> {
   try {
@@ -341,10 +342,17 @@ export async function exportClients(
 
     // Deixa o if do PDF preparado para a nossa próxima etapa
     if (format === "pdf") {
-      res.status(400).json({
-        success: false,
-        message: "A geração de PDF será implementada em breve.",
-      });
+      const pdfBuffer = await generateClientsPDF(clients);
+
+      // Define os headers para avisar o navegador que é um PDF
+      res.setHeader("Content-Type", "application/pdf");
+      res.setHeader(
+        "Content-Disposition",
+        'attachment; filename="base_clientes.pdf"',
+      );
+
+      // Envia o arquivo binário gerado
+      res.status(200).send(pdfBuffer);
       return;
     }
 
