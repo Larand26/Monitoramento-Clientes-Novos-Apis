@@ -1,5 +1,5 @@
 export default interface IResponse {
-  success: boolean;
+  success: true;
   data: any | any[];
   pagination?: {
     total: number;

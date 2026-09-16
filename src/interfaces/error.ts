@@ -1,5 +1,5 @@
 export default interface IError {
-  success: boolean;
+  success: false;
   message: string;
   archive: string;
   error: string;
