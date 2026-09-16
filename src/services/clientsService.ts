@@ -11,8 +11,48 @@ export async function getClients(
   limit: number,
 ): Promise<IResponse | IError> {
   try {
-    const clients: any[] = await findData(ClientModel, filters, "clients");
+    const { min_orders, ...dbFilters } = filters;
+
+    let clients: any[] = [];
+
+    if (min_orders !== undefined && min_orders !== "") {
+      clients = await ClientModel.aggregate([
+        { $match: dbFilters },
+
+        {
+          $lookup: {
+            from: "orders",
+            localField: "_id", // A chave primária no ClientModel
+            foreignField: "client_id", // A chave estrangeira lá na tabela de Orders
+            as: "client_orders", // Nome do array temporário onde os pedidos serão injetados
+          },
+        },
+
+        // Passo C: Cria um campo virtual contando quantos pedidos vieram no join
+        {
+          $addFields: {
+            total_orders: { $size: "$client_orders" },
+          },
+        },
+
+        // Passo D: O equivalente ao "HAVING" do SQL, filtra os que têm o mínimo de pedidos
+        {
+          $match: {
+            total_orders: { $gte: Number(min_orders) },
+          },
+        },
+
+        {
+          $project: { client_orders: 0 },
+        },
+      ]);
+    } else {
+      // 3. Se não tem filtro de min_orders, usamos a sua busca original mais leve
+      clients = await findData(ClientModel, dbFilters, "clients");
+    }
+
     const totalClients = clients.length;
+
     return {
       success: true,
       data: clients.slice((page - 1) * limit, page * limit),
@@ -31,6 +71,7 @@ export async function getClients(
     };
   }
 }
+
 export async function getClientsById(
   id: string,
   id_type: string,
