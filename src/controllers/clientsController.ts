@@ -29,7 +29,7 @@ export async function getClients(req: Request, res: Response): Promise<void> {
     if (name) {
       serviceParams.name = { $regex: String(name), $options: "i" };
     }
-    if (seller_id) serviceParams.seller_id = Number(seller_id);
+    if (seller_id) serviceParams.seller_id = String(seller_id);
     if (store_id) serviceParams.store_id = String(store_id);
     if (created_start || created_end) {
       serviceParams.created_at = {};
